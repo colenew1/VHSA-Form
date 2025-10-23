@@ -2521,10 +2521,16 @@
         
         // Show all screening sections by default when page loads
         window.addEventListener('load', function() {
+            // Make all sections visible
             document.getElementById('visionSection').style.display = 'block';
             document.getElementById('hearingSection').style.display = 'block';
             document.getElementById('acanthosisSection').style.display = 'block';
             document.getElementById('scoliosisSection').style.display = 'block';
+            
+            // Remove any hidden classes that might be applied
+            document.getElementById('screeningTestsContainer').classList.remove('hidden');
+            document.getElementById('acanthosisSection').classList.remove('hidden');
+            document.getElementById('scoliosisSection').classList.remove('hidden');
             
             // All sections start closed by default
             // They will be opened based on student requirements when a student is searched

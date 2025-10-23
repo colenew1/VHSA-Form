@@ -1888,11 +1888,17 @@
         function handleAbsentChange(element, value) {
             selectRadio(element);
             const testsContainer = document.getElementById('screeningTestsContainer');
+            const acanthosisSection = document.getElementById('acanthosisSection');
+            const scoliosisSection = document.getElementById('scoliosisSection');
             
             if (value === 'yes') {
                 testsContainer.classList.add('hidden');
+                if (acanthosisSection) acanthosisSection.classList.add('hidden');
+                if (scoliosisSection) scoliosisSection.classList.add('hidden');
             } else {
                 testsContainer.classList.remove('hidden');
+                if (acanthosisSection) acanthosisSection.classList.remove('hidden');
+                if (scoliosisSection) scoliosisSection.classList.remove('hidden');
             }
         }
 
@@ -2393,6 +2399,8 @@
                 // Reset absent to "Present"
                 document.querySelector('input[name="absent"][value="no"]').checked = true;
                 document.getElementById('screeningTestsContainer').classList.remove('hidden');
+                document.getElementById('acanthosisSection').classList.remove('hidden');
+                document.getElementById('scoliosisSection').classList.remove('hidden');
                 
                 // Clear all screening sections
                 clearAllScreeningSections();

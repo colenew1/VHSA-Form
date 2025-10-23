@@ -1,0 +1,11 @@
+{
+  "name": "vhsa-form-netlify-functions",
+  "version": "1.0.0",
+  "description": "Netlify serverless functions for VHSA Form API",
+  "main": "api.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "@supabase/supabase-js": "^2.38.4",
+    "cors": "^2.8.5"
+  }
+}

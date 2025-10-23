@@ -1348,7 +1348,10 @@
         }
 
         // Backend API URLs
-        const API_BASE = 'http://localhost:3000/api';
+        // Use environment-based API URL - works for both local development and production
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000/api' 
+            : '/api';
 
         // Vision auto-fill logic
         function handleVisionResult(result, day) {

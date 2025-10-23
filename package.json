@@ -1,0 +1,24 @@
+{
+  "name": "vhsa-form",
+  "version": "1.0.0",
+  "description": "School Health Screening System - Full Stack Application",
+  "scripts": {
+    "build": "echo 'Frontend build completed'",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "npx http-server frontend -p 8080",
+    "install:backend": "cd backend && npm install",
+    "postinstall": "npm run install:backend"
+  },
+  "keywords": ["health", "screening", "school", "fullstack"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@supabase/supabase-js": "^2.38.4",
+    "cors": "^2.8.5"
+  }
+}

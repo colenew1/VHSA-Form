@@ -156,8 +156,9 @@
         }
 
         .collapsible-content {
-            max-height: 2000px;
-            overflow: visible;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
 
         .collapsible-content.open {
@@ -578,7 +579,7 @@
                     <div id="visionSection" class="collapsible-section" data-section="vision">
                         <div class="collapsible-header" onclick="toggleCollapsible('vision')">
                             <span class="collapsible-title">👁️ Vision Screening</span>
-                            <span class="collapsible-icon" id="vision-icon">▼</span>
+                            <span class="collapsible-icon" id="vision-icon">▶</span>
                         </div>
                         <div class="collapsible-content" id="vision-content">
                             <div class="collapsible-inner">
@@ -770,7 +771,7 @@
                     <div id="hearingSection" class="collapsible-section" data-section="hearing">
                         <div class="collapsible-header" onclick="toggleCollapsible('hearing')">
                             <span class="collapsible-title">👂 Hearing Screening</span>
-                            <span class="collapsible-icon" id="hearing-icon">▼</span>
+                            <span class="collapsible-icon" id="hearing-icon">▶</span>
                         </div>
                         <div class="collapsible-content" id="hearing-content">
                             <div class="collapsible-inner">
@@ -1060,7 +1061,7 @@
                     <div id="acanthosisSection" class="collapsible-section" data-section="acanthosis">
                         <div class="collapsible-header" onclick="toggleCollapsible('acanthosis')">
                             <span class="collapsible-title">🔬 Acanthosis Nigricans Screening</span>
-                            <span class="collapsible-icon" id="acanthosis-icon">▼</span>
+                            <span class="collapsible-icon" id="acanthosis-icon">▶</span>
                         </div>
                         <div class="collapsible-content" id="acanthosis-content">
                             <div class="collapsible-inner">
@@ -1142,7 +1143,7 @@
                     <div id="scoliosisSection" class="collapsible-section" data-section="scoliosis">
                         <div class="collapsible-header" onclick="toggleCollapsible('scoliosis')">
                             <span class="collapsible-title">🦴 Scoliosis Screening</span>
-                            <span class="collapsible-icon" id="scoliosis-icon">▼</span>
+                            <span class="collapsible-icon" id="scoliosis-icon">▶</span>
                         </div>
                         <div class="collapsible-content" id="scoliosis-content">
                             <div class="collapsible-inner">
@@ -1555,32 +1556,8 @@
                     // Fill in student information from API response
                     fillStudentForm(studentData);
                     
-                    // Handle required screenings if provided
-                    if (responseData.requiredScreenings) {
-                        const required = responseData.requiredScreenings;
-                        
-                        // Show required screenings banner
-                        showRequiredScreenings(required);
-                        
-                        // Show/hide sections based on requirements
-                        document.getElementById('visionSection').style.display = 'block'; // Always show vision
-                        document.getElementById('hearingSection').style.display = 'block'; // Always show hearing
-                        document.getElementById('acanthosisSection').style.display = 'block'; // Always show acanthosis
-                        document.getElementById('scoliosisSection').style.display = 'block'; // Always show scoliosis
-                        
-                        // Auto-expand required sections
-                        if (required.vision) openAccordion('vision');
-                        if (required.hearing) openAccordion('hearing');
-                        if (required.acanthosis) openAccordion('acanthosis');
-                        if (required.scoliosis) openAccordion('scoliosis');
-                    } else {
-                        // If no requiredScreenings data, show all sections normally
-                        showRequiredScreenings(null); // Hide banner
-                        document.getElementById('visionSection').style.display = 'block';
-                        document.getElementById('hearingSection').style.display = 'block';
-                        document.getElementById('acanthosisSection').style.display = 'block';
-                        document.getElementById('scoliosisSection').style.display = 'block';
-                    }
+                    // Open required sections based on student data
+                    openRequiredSections(studentData);
                     
                     showSuccessMessage('Student found and information loaded!');
                 } else {
@@ -2541,12 +2518,151 @@
             document.getElementById('acanthosisSection').style.display = 'block';
             document.getElementById('scoliosisSection').style.display = 'block';
             
-            // Open all sections by default
-            openAccordion('vision');
-            openAccordion('hearing');
-            openAccordion('acanthosis');
-            openAccordion('scoliosis');
+            // All sections start closed by default
+            // They will be opened based on student requirements when a student is searched
         });
+
+        // Function to determine required screenings based on student data
+        function getRequiredScreenings(grade, gender, status) {
+            const isNew = status.toLowerCase() === 'new';
+            const gradeLower = grade.toLowerCase();
+            const genderLower = gender.toLowerCase();
+            
+            const required = {
+                vision: false,
+                hearing: false,
+                acanthosis: false,
+                scoliosis: false
+            };
+
+            // PreK 3, PreK 4, Kinder
+            if (gradeLower.includes('pre-k') || gradeLower.includes('prek') || gradeLower.includes('kinder')) {
+                required.vision = true;
+                required.hearing = true;
+            }
+            // 1st grade
+            else if (gradeLower.includes('1st') || gradeLower === '1') {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+            }
+            // 2nd grade (NEW only)
+            else if ((gradeLower.includes('2nd') || gradeLower === '2') && isNew) {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+            }
+            // 3rd grade
+            else if (gradeLower.includes('3rd') || gradeLower === '3') {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+            }
+            // 4th grade (NEW only)
+            else if ((gradeLower.includes('4th') || gradeLower === '4') && isNew) {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+            }
+            // 5th grade - UPDATED FOR "OTHER"
+            else if (gradeLower.includes('5th') || gradeLower === '5') {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+                // Scoliosis for females OR other (both get tested)
+                if (genderLower === 'female' || genderLower === 'other') {
+                    required.scoliosis = true;
+                }
+            }
+            // 6th grade (NEW only)
+            else if ((gradeLower.includes('6th') || gradeLower === '6') && isNew) {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+            }
+            // 7th grade - UPDATED FOR "OTHER"
+            else if (gradeLower.includes('7th') || gradeLower === '7') {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+                // Scoliosis for females OR other (both get tested)
+                if (genderLower === 'female' || genderLower === 'other') {
+                    required.scoliosis = true;
+                }
+            }
+            // 8th grade - UPDATED FOR "OTHER"
+            else if (gradeLower.includes('8th') || gradeLower === '8') {
+                // Males returning: scoliosis only
+                if (genderLower === 'male' && !isNew) {
+                    required.scoliosis = true;
+                }
+                // Males new: vision, hearing, acanthosis, scoliosis
+                else if (genderLower === 'male' && isNew) {
+                    required.vision = true;
+                    required.hearing = true;
+                    required.acanthosis = true;
+                    required.scoliosis = true;
+                }
+                // Females new: vision, hearing, acanthosis (no scoliosis - already done in 7th)
+                else if (genderLower === 'female' && isNew) {
+                    required.vision = true;
+                    required.hearing = true;
+                    required.acanthosis = true;
+                }
+                // OTHER: gets everything (both male and female requirements)
+                else if (genderLower === 'other') {
+                    required.vision = isNew; // Only if new
+                    required.hearing = isNew; // Only if new
+                    required.acanthosis = isNew; // Only if new
+                    required.scoliosis = true; // Always (covers both genders)
+                }
+            }
+            // 9th-12th grade (NEW only)
+            else if ((gradeLower.includes('9th') || gradeLower.includes('10th') || gradeLower.includes('11th') || gradeLower.includes('12th') || 
+                      gradeLower === '9' || gradeLower === '10' || gradeLower === '11' || gradeLower === '12') && isNew) {
+                required.vision = true;
+                required.hearing = true;
+                required.acanthosis = true;
+            }
+
+            return required;
+        }
+
+        // Function to open required screening sections based on student data
+        function openRequiredSections(student) {
+            const requiredScreenings = getRequiredScreenings(student.grade, student.gender, student.status);
+            
+            // Close all sections first
+            ['vision', 'hearing', 'acanthosis', 'scoliosis'].forEach(section => {
+                const content = document.getElementById(`${section}-content`);
+                const icon = document.getElementById(`${section}-icon`);
+                const header = document.querySelector(`[data-section="${section}"] .collapsible-header`);
+                
+                if (content) content.classList.remove('open');
+                if (icon) {
+                    icon.classList.remove('open');
+                    icon.textContent = '▶';
+                }
+                if (header) header.classList.remove('active');
+            });
+            
+            // Open only required sections
+            if (requiredScreenings.vision) {
+                openAccordion('vision');
+            }
+            if (requiredScreenings.hearing) {
+                openAccordion('hearing');
+            }
+            if (requiredScreenings.acanthosis) {
+                openAccordion('acanthosis');
+            }
+            if (requiredScreenings.scoliosis) {
+                openAccordion('scoliosis');
+            }
+            
+            // Update required screenings banner
+            showRequiredScreenings(requiredScreenings);
+        }
     </script>
 </body>
 </html>

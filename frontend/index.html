@@ -156,29 +156,12 @@
         }
 
         .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
+            max-height: 2000px;
+            overflow: visible;
         }
 
         .collapsible-content.open {
             max-height: 2000px;
-        }
-
-        .collapsible-content:not(.open) .session-tabs {
-            display: none; /* Hide tabs when collapsed */
-        }
-
-        .collapsible-content:not(.open) .session-content {
-            display: none; /* Hide form content when collapsed */
-        }
-
-        .collapsible-content.open .session-tabs {
-            display: block; /* Show tabs when expanded */
-        }
-
-        .collapsible-content.open .session-content {
-            display: block; /* Show form content when expanded */
         }
 
         .collapsible-inner {
@@ -595,7 +578,7 @@
                     <div id="visionSection" class="collapsible-section" data-section="vision">
                         <div class="collapsible-header" onclick="toggleCollapsible('vision')">
                             <span class="collapsible-title">👁️ Vision Screening</span>
-                            <span class="collapsible-icon" id="vision-icon">▶</span>
+                            <span class="collapsible-icon" id="vision-icon">▼</span>
                         </div>
                         <div class="collapsible-content" id="vision-content">
                             <div class="collapsible-inner">
@@ -787,7 +770,7 @@
                     <div id="hearingSection" class="collapsible-section" data-section="hearing">
                         <div class="collapsible-header" onclick="toggleCollapsible('hearing')">
                             <span class="collapsible-title">👂 Hearing Screening</span>
-                            <span class="collapsible-icon" id="hearing-icon">▶</span>
+                            <span class="collapsible-icon" id="hearing-icon">▼</span>
                         </div>
                         <div class="collapsible-content" id="hearing-content">
                             <div class="collapsible-inner">
@@ -1077,7 +1060,7 @@
                     <div id="acanthosisSection" class="collapsible-section" data-section="acanthosis">
                         <div class="collapsible-header" onclick="toggleCollapsible('acanthosis')">
                             <span class="collapsible-title">🔬 Acanthosis Nigricans Screening</span>
-                            <span class="collapsible-icon" id="acanthosis-icon">▶</span>
+                            <span class="collapsible-icon" id="acanthosis-icon">▼</span>
                         </div>
                         <div class="collapsible-content" id="acanthosis-content">
                             <div class="collapsible-inner">
@@ -1159,7 +1142,7 @@
                     <div id="scoliosisSection" class="collapsible-section" data-section="scoliosis">
                         <div class="collapsible-header" onclick="toggleCollapsible('scoliosis')">
                             <span class="collapsible-title">🦴 Scoliosis Screening</span>
-                            <span class="collapsible-icon" id="scoliosis-icon">▶</span>
+                            <span class="collapsible-icon" id="scoliosis-icon">▼</span>
                         </div>
                         <div class="collapsible-content" id="scoliosis-content">
                             <div class="collapsible-inner">
@@ -2558,20 +2541,11 @@
             document.getElementById('acanthosisSection').style.display = 'block';
             document.getElementById('scoliosisSection').style.display = 'block';
             
-            // Ensure all sections are collapsed by default
-            const sections = ['vision', 'hearing', 'acanthosis', 'scoliosis'];
-            sections.forEach(section => {
-                const content = document.getElementById(`${section}-content`);
-                const icon = document.getElementById(`${section}-icon`);
-                const header = document.querySelector(`[data-section="${section}"] .collapsible-header`);
-                
-                if (content) content.classList.remove('open');
-                if (icon) {
-                    icon.classList.remove('open');
-                    icon.textContent = '▶';
-                }
-                if (header) header.classList.remove('active');
-            });
+            // Open all sections by default
+            openAccordion('vision');
+            openAccordion('hearing');
+            openAccordion('acanthosis');
+            openAccordion('scoliosis');
         });
     </script>
 </body>
